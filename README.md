@@ -4,7 +4,7 @@ This library and applications are part of the master thesis "Indoor Localization
 
 ToDo: Link to Thesis
 
-# 1 Prerequisites
+# 1 Prerequisite
 
 ## The code depends on: 
 
@@ -13,7 +13,7 @@ ToDo: Link to Thesis
 - Cupoch 0.2.11.0 [link](https://github.com/neka-nat/cupoch), supposed build directory: ~/cupoch/build
 - CUDA 11.4 (Laptop: 11.8) [link Xavier](https://developer.nvidia.com/embedded/jetpack-sdk-502), [link CUDA toolkit archive](https://developer.nvidia.com/cuda-toolkit-archive)
 
-The program is built with cmake and tested on NVIDIA Jetson Xavier NX (NVIDIA’s JetPack SDK 5.0.2) and Laptop Development device (Ubuntu 22.04 on WSL2 x64). Please see the thesis for deatils. 
+The program is built with CMake and tested on NVIDIA Jetson Xavier NX (NVIDIA’s JetPack SDK 5.0.2) and a Laptop Development device (Ubuntu 22.04 on WSL2 x64). Please see the thesis for details. 
 
 Please find the example CMake output files of the PCL and Cupoch libraries generated on the Xavier NX in ./CMakeLogs for the required build settings.
 
@@ -26,6 +26,12 @@ The software bundle is separated into four parts containing their own CMakeList.
 ./02_correspondence_estimation
 ./03_data_aquisition
 ./05_pipeline
+```
+
+Before you begin building the CUDA-applied programs, please make sure the PATH variables are set correctly. E.g.:
+```console
+export PATH=/usr/local/cuda-11.4/bin${PATH:+:${PATH}}
+export LD_LIBRARY_PATH=/usr/local/cuda-11.4/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 ```
 
 To build the programs, execute the following steps:
@@ -41,7 +47,7 @@ The programs are built into the build directory and should be executed from ther
 
 # 3 Datasets
 
-The Manually Pre-Processed 3D model Datasets of Scene A and Scene B are located in ./files. Additionally, sample files of file lists and feature descritors are located in the corresponding sub-directories. 
+The Manually Pre-Processed 3D model Datasets of Scene A and Scene B are located in ./files. Additionally, sample files of file lists and feature descriptors are located in the corresponding sub-directories. 
 
 # 4 Program Descriptions
 
@@ -53,7 +59,7 @@ First, the LiDAR dataset has to be scaled, as one unit of the LiDAR dataset is 1
 
 ### 4.1.1 Program 01_feature_ext/14_lidar_preprocessing.cpp
 
-The program is used to preprocess the 3D model \ac{PCD}. Please refere to the library or the thesis for the available presets.
+The program is used to preprocess the 3D model \ac{PCD}. Please refer to the library or the thesis for the available presets.
 
 ```console
 Usage: ./14_lidar_preprocessing <input cloud [.pcd]> [-t <feature type>] [-s scale_factor] \n \
@@ -80,7 +86,7 @@ Usage: ./14_lidar_preprocessing <input cloud [.pcd]> [-t <feature type>] [-s sca
 
 ## 4.2 Static Research Scenario
 
-The following programs are executed at the static research scenario.
+The following programs are executed in the static research scenario.
 
 ### 4.2.1 Data Acquisition from RealSense Camera: Program 03_data_aquisition/01_RealSense_Capture_PCD_RGB_BAG.cpp
 
@@ -118,36 +124,36 @@ example:  ./01_RealSense_Capture_PCD_RGB_BAG -s -hl -p 0.3 -rsp p5a 20241020_fht
 ### 4.2.2 Visualization: Program 02_correspondence_estimation/08_draw_position_history.cpp 
 
 To visualize the correspondence estimations, the localized poses and orientations can be displayed in a 3D viewer:
-- The pose is displayed as dot and the number of the dataset
+- The pose is displayed as a dot and the number of the dataset
 - The orientation is displayed as a small coordinate frame
 - The path between the datasets is displayed as a green line between the estimated positions.
 - The LiDAR 3D model is displayed as a black point cloud. 
-- (optional) The corresponding source point clouds are displayed in different colors matching the pose numbers. 
+- (optional) The corresponding source point clouds are displayed in different colours matching the pose numbers. 
 
-The program requires a file list containing the names of the data. This list is described in detail in the usage advice. The example dataset contains a file list to display the positive correspondences.
+The program requires a file list containing the names of the data. This list is described in detail in the usage advice. The example dataset includes a file list to display the positive correspondences.
 
 #### Usage
 ```console
-Display position history using following data: 
+Display position history using the following data: 
         - Destination pointcloud (3D-Model) 
         - Transformation matrix of every matching point to display 
         - Pointcloud corresponding to the transformation matrix (optional) 
 
 Usage: ./08_draw_position_history <fileList> [-p] [-fpfh|-narf] 
         <fileList>    ... ASCII file containing source files to display - file extension must be .flist (details below) 
-        [-p]          ... Display corresponding transformed pointcloud (optional; if activated, .pcd data must be present) 
+        [-p]          ... Display corresponding transformed point cloud (optional; if activated, .pcd data must be present) 
         [-fpfh|-narf] ... Set feature type (NARF or FPFH) 
 
 <fileList> data format (file extension: .flist): 
         1st line: 
                 fileName.flist of 3D-Modell without path and including file extension 
-                path must be ../ relative to <fileList>; file extention must be .pcd 
+                path must be ../ relative to <fileList>; file extension must be .pcd 
         2nd to nth line: 
                 file name of matching point transformation matrix without path, without _tfmatrix appendix and without file extension: 
                     path must be ../feature_desc/ relative to <fileList>; 
-                    NARF features: file extention must be _tfmatrix.Affine3f 
-                    FPFH features: file extention must be _PointNormal_tfmatrix.Affine3f 
-                corresponding PCD file (in case of [-p]): path must be ../ relative to <fileList>; file extention must be .pcd 
+                    NARF features: file extension must be _tfmatrix.Affine3f 
+                    FPFH features: file extension must be _PointNormal_tfmatrix.Affine3f 
+                corresponding PCD file (in case of [-p]): path must be ../ relative to <fileList>; file extension must be .pcd 
 
         EXAMPLE: 
                 3dmodel.pcd 
@@ -164,7 +170,7 @@ Usage: ./08_draw_position_history <fileList> [-p] [-fpfh|-narf]
 
 ### 4.2.3 Manual Computation NARF: Key Points and Correspondence Estimation
 
-The next section describes how to manually execute the correspondence estimation steps. After successful estimation, a path of the localizations can be drawn in a 3D viewer as described in Section 4.5. This section describes the usage of NARF key points. The required dataset is generated as described in section 4.2. Alternatively, the example dataset might be used. As the research has shown, NARF key points are not very reliable. Therefore, the datasets might not match. 
+The next section describes how to execute the correspondence estimation steps manually. After successful estimation, a path of the localizations can be drawn in a 3D viewer as described in Section 4.5. This section describes the usage of NARF key points. The required dataset is generated as described in section 4.2. Alternatively, the example dataset might be used. As the research has shown, NARF key points are not very reliable. Therefore, the datasets might not match. 
 
 
 ### 4.2.3.1 NARF Correspondence Estimation: Program 02_correspondence_estimation/01_narf_corr.cpp
@@ -222,7 +228,7 @@ The scripts in `01_feature_ext/scripts/` compute the FPFH correspondence estimat
 
 ## 4.3 Real-Time Scenario
 
-The following programs are executed at the real-time scenario.
+The following programs are executed in the real-time scenario.
 
 ### 4.3.1 Pose Estimation Loop: Program 05_pipeline/01_pipeline.cpp
 
@@ -256,21 +262,21 @@ Usage: ./07_draw_position_stream <3D model PCD [.pcd]> [server ip address]
 
 ### 4.3.3 Live Logfile Playback: Program 05_pipeline/09_stream_logged_data.cpp
 
-The application opens a logfile stored with 4.3.1 for replaying. It opens a TCP/IP server to stream the data to the 4.3.2 live visualization application.
+The application opens a log file stored with 4.3.1 for replaying. It opens a TCP/IP server to stream the data to the 4.3.2 live visualization application.
 
 ```console
 usage: ./09_stream_logged_data <log filename> [-nowait]"
-                <log filename>  filename of binary logfile"
+                <log filename>  filename of binary log file"
                 -nowait         don't replay temporal data"
 ```
 
 ### 4.3.4 Live Logfile Playback: Program 05_pipeline/02_convert_log.cpp
 
-This program converts a binary log-file data acquired with the real-time application pose estimation loop (pipeline) to an ASCII CSV file.
+This program converts binary log-file data acquired with the real-time application pose estimation loop (pipeline) to an ASCII CSV file.
 
 ```console
 usage: ./02_convert_log <log filename> [-conv]" \
                 <log filename>  filename of binary logfile" \
-                [-conv]         only convert successfully alligned data (optional)" \
+                [-conv]         only convert successfully aligned data (optional)" \
        output file is inputfile.csv (without original file extension)"
 ```
