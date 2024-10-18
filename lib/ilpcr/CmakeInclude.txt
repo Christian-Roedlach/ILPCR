@@ -1,0 +1,20 @@
+add_library (ilpcr STATIC)
+target_sources(ilpcr
+    PRIVATE 
+        ../lib/ilpcr/src/feature_estimation.cpp
+        ../lib/ilpcr/src/file_io.cpp
+        ../lib/ilpcr/src/camera.cpp
+        ../lib/ilpcr/src/corr_estimation.cpp
+        ../lib/ilpcr/src/viewer.cpp
+        ../lib/ilpcr/src/network.cpp
+        ../lib/ilpcr/src/testdata.cpp
+        ../lib/ilpcr/src/filters.cpp
+        ../lib/ilpcr/src/log.cpp
+        ../lib/ilpcr/src/presets.cpp
+)
+target_link_libraries (ilpcr ${PCL_LIBRARIES})
+target_compile_options(ilpcr PRIVATE -Wall -Wextra -Wpedantic)
+target_include_directories(ilpcr
+    PUBLIC
+        ../lib/ilpcr/include
+)

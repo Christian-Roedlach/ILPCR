@@ -1,0 +1,121 @@
+# this settings are required to link against the cupoch library
+# 2024 Christian Roedlach
+
+find_package(PkgConfig QUIET)
+find_package(pybind11  QUIET)
+include(GenerateExportHeader)
+if (PKGCONFIG_FOUND)
+    pkg_search_module(EIGEN3          eigen3>=3.2.7   QUIET)
+    pkg_search_module(GLFW            glfw3           QUIET)
+    pkg_search_module(GLEW            glew            QUIET)
+    pkg_search_module(JSONCPP         jsoncpp>=1.7.0  QUIET)
+    pkg_search_module(PNG             libpng>=1.6.0   QUIET)
+    pkg_search_module(JPEG_TURBO      libturbojpeg    QUIET)
+endif (PKGCONFIG_FOUND)
+
+find_library(CUDART_LIBRARY cudart ${CMAKE_CUDA_IMPLICIT_LINK_DIRECTORIES})
+
+list(APPEND CUPOCH_3RDPARTY_INCLUDE_DIRS
+    ${EIGEN3_INCLUDE_DIRS}
+    ${CUPOCH_SRC_ROOT}/third_party
+    ${CUPOCH_SRC_ROOT}/third_party/libjpeg-turbo/libjpeg-turbo
+    ${CUPOCH_SRC_ROOT}/build/third_party/turbojpeg/src/ext_turbojpeg-build
+    ${PNG_INCLUDE_DIRS}
+    ${CUPOCH_SRC_ROOT}/third_party/rply
+    ${CUPOCH_SRC_ROOT}/third_party/jsoncpp/include
+    ${CUPOCH_SRC_ROOT}/third_party/liblzf
+    ${CUPOCH_SRC_ROOT}/third_party/tomasakeninemoeller
+    ${CUPOCH_SRC_ROOT}/third_party/dlpack/include
+    ${CUPOCH_SRC_ROOT}/third_party/rmm/include
+    ${CUPOCH_SRC_ROOT}/third_party
+    ${CUPOCH_SRC_ROOT}/third_party/imgui
+    ${CUPOCH_SRC_ROOT}/third_party/stdgpu/src
+    ${CUPOCH_SRC_ROOT}/build/third_party/stdgpu/src/stdgpu/include
+    ${CUPOCH_SRC_ROOT}/third_party/spdlog/include
+    ${CUPOCH_SRC_ROOT}/third_party/libSGM/include
+    ${CUPOCH_SRC_ROOT}/third_party/tinyobjloader
+    ${CUPOCH_SRC_ROOT}/third_party/lbvh
+    ${CUPOCH_SRC_ROOT}/third_party/lbvh_index
+    ${CUPOCH_SRC_ROOT}/third_party/urdfdom/urdf_parser/include
+    ${CUPOCH_SRC_ROOT}/third_party/urdfdom/urdf_parser/include/tinyxml
+    ${CUPOCH_SRC_ROOT}/build/third_party
+    ${CMAKE_CUDA_IMPLICIT_LINK_DIRECTORIES}
+)
+
+set(CUPOCH_LIBRARY_DIRS 
+    ${CUPOCH_BUILD_ROOT}/lib
+    ${CUPOCH_BUILD_ROOT}/third_party/turbojpeg/src/ext_turbojpeg-build
+    ${CUPOCH_BUILD_ROOT}/third_party/stdgpu/bin
+    )
+
+set(CUPOCH_LIBRARIES
+    cupoch_camera
+    cupoch_collision
+    cupoch_geometry
+    cupoch_imageproc
+    cupoch_integration
+    cupoch_io
+    cupoch_kinematics
+    cupoch_kinfu
+    cupoch_knn
+    cupoch_odometry
+    cupoch_planning
+    cupoch_registration
+    cupoch_utility
+    cupoch_visualization
+#    cupoch_wrapper
+)
+
+list(APPEND CUPOCH_3RDPARTY_LIBRARIES
+    flann_cuda_s
+    GLEW
+    GL
+    X11
+    GLU
+    glfw
+    turbojpeg
+    png16
+    z
+    liblzf
+    rply
+    jsoncpp
+    stdgpu
+    sgm
+    tinyobjloader
+    imgui
+    urdfdom
+    ${CUDART_LIBRARY}
+    Threads::Threads
+    dl
+    rt
+)
+
+set(CUPOCH_NVCC_FLAGS
+    --use_fast_math
+    --expt-relaxed-constexpr
+    --expt-extended-lambda
+    --default-stream per-thread
+    --use_fast_math
+    --extended-lambda
+    -Xcudafe "--diag_suppress=integer_sign_change"
+    -Xcudafe "--diag_suppress=partial_override"
+    -Xcudafe "--diag_suppress=virtual_function_decl_hidden"
+)
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo" )
+    list(APPEND CUPOCH_NVCC_FLAGS
+        -G;-g
+    )
+endif()
+
+set(CUPOCH_DEFINITIONS
+#    -DFLANN_USE_CUDA
+    -DUSE_RMM
+)
+
+include(${CUPOCH_SRC_ROOT}/cmake/CudaComputeTargetFlags.cmake)
+APPEND_TARGET_ARCH_FLAGS()
+
+set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS}
+        ${CUPOCH_NVCC_FLAGS}
+)
