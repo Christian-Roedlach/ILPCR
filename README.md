@@ -1,4 +1,4 @@
-# Indoor Localization by Cross-Source Point Cloud Registration (ILPCR) library
+# Indoor Localization by Cross-Source Point Cloud Registration (ILPCR) Library
 
 This library and applications are part of the master thesis "Indoor Localization by Cross-Source Point Cloud Registration of LiDAR and RGB-D Datasets". Author: Christian Roedlach
 
