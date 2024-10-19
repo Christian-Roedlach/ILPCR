@@ -170,7 +170,7 @@ Usage: ./08_draw_position_history <fileList> [-p] [-fpfh|-narf]
 
 ### 4.2.3 Manual Computation NARF: Key Points and Correspondence Estimation
 
-The next section describes how to execute the correspondence estimation steps manually. After successful estimation, a path of the localizations can be drawn in a 3D viewer as described in Section 4.5. This section describes the usage of NARF key points. The required dataset is generated as described in section 4.2. Alternatively, the example dataset might be used. As the research has shown, NARF key points are not very reliable. Therefore, the datasets might not match. 
+The next section describes how to execute the correspondence estimation steps manually. After successful estimation, a path of the localizations can be drawn in a 3D viewer as described in Section 4.2.2. This section describes the usage of NARF key points. The required dataset is generated as described in section 4.1 and 4.2.1. As the research has shown, NARF key points are not very reliable. Therefore, the datasets might not match. 
 
 
 ### 4.2.3.1 NARF Correspondence Estimation: Program 02_correspondence_estimation/01_narf_corr.cpp
