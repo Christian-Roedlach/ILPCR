@@ -2,7 +2,7 @@
 
 This library and applications are part of the master thesis "Indoor Localization by Cross-Source Point Cloud Registration of LiDAR and RGB-D Datasets". Author: Christian Roedlach
 
-ToDo: Link to Thesis
+[The thesis is available here](https://permalink.obvsg.at/ftw/AC17355600)
 
 # 1 Prerequisite
 
